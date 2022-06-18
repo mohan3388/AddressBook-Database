@@ -86,3 +86,193 @@ select * from Addressbook INNER JOIN AddressBookMapping ON AddressBookID=Address
 
 
 -------------------------------
+
+use [AddressBook]
+
+
+CREATE PROCEDURE [dbo].[InsertAddressdata]
+(
+	@ID int,
+	@FirstName varchar(15),
+	@LastName varchar(15),
+	@Address varchar(50),
+	@City varchar(15),
+	@State varchar(30),
+	@ZipCode Bigint,
+	@PhoneNumber Bigint,
+	@Email varchar(50)
+	)
+	
+AS
+SET XACT_ABORT on;
+SET NOCOUNT ON;
+BEGIN
+BEGIN TRY
+BEGIN TRANSACTION;
+	SET NOCOUNT ON;
+	DECLARE @new_identity INTEGER = 0;
+	DECLARE @result bit = 0;
+	INSERT INTO Addressbook(FirstName, LastName, Address, City, State, ZipCode, PhoneNumber, Email)
+	VALUES ('mohan', 'sahu', 'bemetara', 'durg', 'cg', 490020, 7898625484, 'sahu12@gmail.com')
+	SELECT @new_identity = @@IDENTITY;
+	COMMIT TRANSACTION
+	SET @result = 1;
+	RETURN @result;
+	END TRY
+	BEGIN CATCH
+
+	IF(XACT_STATE()) = -1
+		BEGIN
+		PRINT
+		'Transaction is uncommitable' + ' Rolling back transaction'
+		ROLLBACK TRANSACTION;
+		RETURN @result;		
+		END
+	ELSE IF(XACT_STATE()) = 1
+		BEGIN
+		PRINT
+		'Transaction is commitable' + ' Commiting back transaction'
+		COMMIT TRANSACTION;
+		SET @result = 1;
+	    RETURN @result;
+	END;
+	END CATCH
+END
+GO
+
+
+select * from Addressbook
+
+--select--
+CREATE PROCEDURE [dbo].[SelectData]
+(
+	@Id int,
+	@FirstName varchar(15),
+	@LastName varchar(15),
+	@Address varchar(50),
+	@City varchar(15),
+	@State varchar(30),
+	@ZipCode Bigint,
+	@PhoneNumber Bigint,
+	@Email varchar(50)
+	)
+AS
+SET XACT_ABORT on;
+SET NOCOUNT ON;
+BEGIN
+BEGIN TRY
+BEGIN TRANSACTION;
+	SET NOCOUNT ON;
+	DECLARE @result bit = 0;
+	select * from Addressbook
+	COMMIT TRANSACTION
+	SET @result = 1;
+	RETURN @result;
+	END TRY
+	BEGIN CATCH
+
+	IF(XACT_STATE()) = -1
+		BEGIN
+		PRINT
+		'Transaction is uncommitable' + ' Rolling back transaction'
+		ROLLBACK TRANSACTION;
+		RETURN @result;		
+		END
+	ELSE IF(XACT_STATE()) = 1
+		BEGIN
+		PRINT
+		'Transaction is commitable' + ' Commiting back transaction'
+		COMMIT TRANSACTION;
+		SET @result = 1;
+	    RETURN @result;
+	END;
+	END CATCH
+END
+GO
+
+
+--Update--
+
+
+
+
+
+CREATE PROCEDURE [dbo].[UpdateData]
+(
+	@Id int,  
+   @Type varchar (50)  
+   	)
+AS
+SET XACT_ABORT on;
+SET NOCOUNT ON;
+BEGIN
+BEGIN TRY
+BEGIN TRANSACTION;
+	SET NOCOUNT ON;
+	DECLARE @result bit = 0;
+	  Update Addressbook set Type = @type
+   where Id=@Id  
+	COMMIT TRANSACTION
+	SET @result = 1;
+	RETURN @result;
+	END TRY
+	BEGIN CATCH
+
+	IF(XACT_STATE()) = -1
+		BEGIN
+		PRINT
+		'Transaction is uncommitable' + ' Rolling back transaction'
+		ROLLBACK TRANSACTION;
+		RETURN @result;		
+		END
+	ELSE IF(XACT_STATE()) = 1
+		BEGIN
+		PRINT
+		'Transaction is commitable' + ' Commiting back transaction'
+		COMMIT TRANSACTION;
+		SET @result = 1;
+	    RETURN @result;
+	END;
+	END CATCH
+END
+GO
+
+--Delete--
+CREATE PROCEDURE [dbo].[DeleteData]
+(
+	@Id int
+	)
+AS
+SET XACT_ABORT on;
+SET NOCOUNT ON;
+BEGIN
+BEGIN TRY
+BEGIN TRANSACTION;
+	SET NOCOUNT ON;
+	DECLARE @result bit = 0;
+	  Delete from Addressbook where Id=@Id  
+	COMMIT TRANSACTION
+	SET @result = 1;
+	RETURN @result;
+	END TRY
+	BEGIN CATCH
+
+	IF(XACT_STATE()) = -1
+		BEGIN
+		PRINT
+		'Transaction is uncommitable' + ' Rolling back transaction'
+		ROLLBACK TRANSACTION;
+		RETURN @result;		
+		END
+	ELSE IF(XACT_STATE()) = 1
+		BEGIN
+		PRINT
+		'Transaction is commitable' + ' Commiting back transaction'
+		COMMIT TRANSACTION;
+		SET @result = 1;
+	    RETURN @result;
+	END;
+	END CATCH
+END
+GO
+
